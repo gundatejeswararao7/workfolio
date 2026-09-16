@@ -1,0 +1,16 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Loopline is a unified professional social network and work marketplace built around one account, one profile, and multiple work contexts. A person can publish opportunities, apply for work, communicate, complete projects, build reputation, and return to the feed without switching roles or dashboards.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "autoprefixer": "^10.6.0"
+  }
+}

@@ -1,0 +1,3242 @@
+# FINAL MASTER PROJECT PROMPT FOR CLAUDE CODE
+
+## Build a Complete Unified Professional Social Network + Work Marketplace
+
+You are an expert full-stack software architect, UI/UX designer, frontend engineer, Python backend engineer, database architect, security engineer, and AI workflow engineer.
+
+Build this project as a **complete, functional, production-quality web application**.
+
+This is NOT a static UI prototype.
+
+Every important feature must work end-to-end:
+
+```text
+Frontend
+   ↓
+API
+   ↓
+Python Backend
+   ↓
+SQLite3
+   ↓
+Persistent Data
+```
+
+The application combines:
+
+```text
+Professional Social Network
++
+Social Feed
++
+People Discovery
++
+Work Marketplace
++
+Project Management
++
+Chat
++
+Notifications
++
+Demo Wallet
++
+AI Assistant
+```
+
+The most important architectural principle is:
+
+> **ONE USER, ONE PROFILE, MULTIPLE CONTEXTS.**
+
+There must NOT be permanent Employer and Worker roles.
+
+A user can give work to another person and later take work from another person.
+
+---
+
+# 1. TECHNOLOGY STACK — STRICT REQUIREMENT
+
+## Frontend
+
+Use:
+
+* React
+* TypeScript
+* TSX
+* Vite
+* Tailwind CSS
+* React Router
+* ESLint
+* Prettier
+* Axios or Fetch
+* Modern reusable React components
+
+Use strict TypeScript.
+
+Avoid unnecessary `any`.
+
+The frontend must be responsive for:
+
+```text
+Mobile
+Tablet
+Desktop
+Large Desktop
+```
+
+---
+
+# 2. BACKEND
+
+Use:
+
+* Python 3
+* FastAPI
+* Pydantic
+* SQLAlchemy
+* Uvicorn
+
+Use a clean architecture:
+
+```text
+Frontend
+   ↓
+FastAPI Router
+   ↓
+Pydantic Schema
+   ↓
+Service Layer
+   ↓
+SQLAlchemy Model
+   ↓
+SQLite3
+```
+
+Do NOT put the entire backend inside `main.py`.
+
+---
+
+# 3. DATABASE
+
+Use:
+
+```text
+SQLite3
+```
+
+through SQLAlchemy.
+
+Do NOT use:
+
+```text
+MySQL
+PostgreSQL
+MongoDB
+Firebase
+Supabase
+```
+
+as the primary database.
+
+The database must be persistent.
+
+Use:
+
+* Foreign keys
+* Relationships
+* Constraints
+* Indexes
+* Timestamps
+* Transactions
+* Proper normalization
+
+---
+
+# 4. PROJECT STRUCTURE
+
+Use a clean structure similar to:
+
+```text
+project/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── layouts/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── api/
+│   │   ├── context/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   ├── routes/
+│   │   ├── assets/
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── eslint.config.js
+│   └── README.md
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── routers/
+│   │   ├── services/
+│   │   ├── auth/
+│   │   ├── utils/
+│   │   └── ai/
+│   ├── tests/
+│   ├── requirements.txt
+│   └── README.md
+│
+├── database/
+│   └── app.db
+│
+├── .env.example
+└── README.md
+```
+
+If an existing repository is provided, inspect it first and preserve useful existing architecture instead of unnecessarily rewriting everything.
+
+---
+
+# 5. CORE ARCHITECTURE — ONE USER
+
+There is ONLY one user type:
+
+```text
+USER
+```
+
+Never create permanent roles:
+
+```text
+Employer
+Worker
+```
+
+Do NOT create:
+
+```text
+EmployerDashboard
+WorkerDashboard
+EmployerProfile
+WorkerProfile
+EmployerTable
+WorkerTable
+```
+
+Instead:
+
+```text
+USER
+ │
+ ├── Give Work
+ │      ↓
+ │   REQUESTER
+ │
+ └── Take Work
+        ↓
+     ASSIGNEE
+```
+
+These are temporary contexts, not permanent account roles.
+
+---
+
+# 6. DYNAMIC ROLE LOOP
+
+Example:
+
+```text
+USER A
+  ↓
+Creates Work
+  ↓
+REQUESTER
+  ↓
+User B accepts
+  ↓
+User B = ASSIGNEE
+```
+
+Later:
+
+```text
+USER B
+  ↓
+Creates another Work
+  ↓
+USER B = REQUESTER
+
+USER A
+  ↓
+Accepts
+  ↓
+USER A = ASSIGNEE
+```
+
+Therefore:
+
+```text
+User
+ ↓
+Requester
+ ↓
+User
+ ↓
+Assignee
+ ↓
+User
+ ↓
+Requester
+ ↓
+...
+```
+
+The user's account and profile never change.
+
+Only the context changes.
+
+---
+
+# 7. MASTER APPLICATION GRAPH
+
+```text
+                         USER
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+       ↓                  ↓                  ↓
+     SOCIAL              WORK             PROFILE
+       │                  │                  │
+       ↓                  ↓                  ↓
+      FEED              SEARCH           Identity
+       │                  │                  │
+       ↓                  ↓                  ↓
+    POSTS          PEOPLE / WORK         Skills
+       │                  │               Projects
+       ↓                  ↓              Experience
+OPPORTUNITIES     REQUEST / APPLY       Certificates
+       │                  │              Portfolio
+       └────────────┬─────┘               Reviews
+                    ↓
+                   WORK
+                    │
+          ┌─────────┼─────────┐
+          ↓         ↓         ↓
+        CHAT   NOTIFICATIONS  AI
+                    │
+                    ↓
+                 REVIEW
+                    │
+                    ↓
+              DEMO PAYMENT
+                    │
+                    ↓
+                COMPLETED
+                    │
+                    ↓
+              RATING / REVIEW
+                    │
+                    ↓
+                 PROFILE
+                    │
+                    ↓
+                   FEED
+                    │
+                    └──── LOOP ────→
+```
+
+---
+
+# 8. AUTHENTICATION — STRICT REQUIREMENT
+
+Authentication must be completely application-managed.
+
+## DO NOT USE:
+
+```text
+Google OAuth
+Google Sign-In
+Continue with Google
+Facebook Login
+GitHub Login
+Microsoft Login
+Apple Login
+Any social login
+Any external identity provider
+```
+
+There must be NO Google authentication.
+
+The user may only register using a Gmail address.
+
+---
+
+# 9. REGISTRATION FLOW
+
+Registration must be:
+
+```text
+START
+  ↓
+Enter Gmail
+  ↓
+Validate @gmail.com
+  │
+  ├── Invalid → ERROR
+  │
+  └── Valid
+       ↓
+     Generate OTP
+       ↓
+     Send OTP
+       ↓
+     Enter OTP
+       ↓
+     Verify OTP
+       │
+       ├── Invalid → Retry
+       │
+       └── Valid
+            ↓
+        Set Password
+            ↓
+      Confirm Password
+            │
+            ├── Mismatch → ERROR
+            │
+            └── Match
+                  ↓
+            Create Account
+                  ↓
+             Profile Setup
+                  ↓
+              Dashboard
+```
+
+Only accept:
+
+```text
+example@gmail.com
+```
+
+Reject:
+
+```text
+example@yahoo.com
+example@outlook.com
+example@company.com
+```
+
+Validation must occur on:
+
+```text
+Frontend
++
+Backend
+```
+
+---
+
+# 10. OTP
+
+Implement:
+
+* OTP generation
+* OTP verification
+* OTP expiration
+* Resend OTP
+* Attempt limits
+* Rate limiting where appropriate
+
+The OTP should be associated with the Gmail address and registration/reset flow.
+
+For development, create an email service abstraction.
+
+Support:
+
+```text
+Development Email Mode
+SMTP Email Mode
+```
+
+If SMTP is not configured, provide a clearly marked development mechanism so the project remains demonstrable.
+
+Do not replace OTP with Google authentication.
+
+---
+
+# 11. PASSWORD
+
+After OTP verification:
+
+```text
+Set Password
+       ↓
+Confirm Password
+       ↓
+Passwords Match?
+       │
+   ┌───┴────┐
+   ↓        ↓
+  NO       YES
+   ↓        ↓
+ ERROR    CREATE
+```
+
+Never store plaintext passwords.
+
+Use secure password hashing.
+
+---
+
+# 12. LOGIN
+
+```text
+LOGIN
+  ↓
+Gmail
+  ↓
+Password
+  ↓
+Backend Authentication
+  │
+  ├── Invalid → Error
+  │
+  └── Valid → Dashboard
+```
+
+---
+
+# 13. FORGOT PASSWORD
+
+```text
+Forgot Password
+      ↓
+Enter Gmail
+      ↓
+Validate @gmail.com
+      ↓
+Send OTP
+      ↓
+Verify OTP
+      ↓
+New Password
+      ↓
+Confirm Password
+      ↓
+Password Updated
+      ↓
+Login
+```
+
+---
+
+# 14. UNIFIED DASHBOARD
+
+Every authenticated user gets one dashboard.
+
+Display:
+
+```text
+Works I'm Doing
+Works I Assigned
+Pending Requests
+Unread Messages
+Demo Wallet Balance
+Rating
+Recent Activities
+Upcoming Deadlines
+Overdue Works
+```
+
+Example:
+
+```text
+┌─────────────────────────────────────────────┐
+│ Welcome                                      │
+├─────────────────────────────────────────────┤
+│ Works I'm Doing       4                     │
+│ Works I Assigned      3                     │
+│ Pending Requests      5                     │
+│ Unread Messages       2                     │
+│ Demo Wallet           ₹10,000               │
+│ Rating                4.8 ⭐                │
+│                                             │
+│ Upcoming Deadlines                           │
+│ React Website        2 Days Remaining       │
+│                                             │
+│ Overdue                                      │
+│ Mobile UI            1 Day Late             │
+└─────────────────────────────────────────────┘
+```
+
+All values must come from the backend/database.
+
+Do not hardcode dashboard statistics.
+
+---
+
+# 15. MAIN NAVIGATION
+
+Use:
+
+```text
+Dashboard
+Profile
+Feed
+Search
+Create
+Requests
+Active Works
+Completed Works
+Chats
+Transactions
+Notifications
+AI Assistant
+Settings
+```
+
+Never add Employer/Worker menus.
+
+---
+
+# 16. PROFILE — PROFESSIONAL + SOCIAL
+
+Create ONE profile combining:
+
+```text
+Professional Identity
++
+Social Media Experience
+```
+
+The design should take inspiration from professional networking and visual social platforms without copying their branding or proprietary UI.
+
+Profile includes:
+
+```text
+Profile Picture
+Cover Image
+Name
+Username
+Bio
+Location
+Skills
+Experience
+Projects
+Certificates
+Portfolio
+Posts
+Images
+Videos
+Reviews
+Connections
+Completed Work
+Rating
+```
+
+---
+
+# 17. PROFILE GRAPH
+
+```text
+PROFILE
+   │
+   ├── About
+   ├── Skills
+   ├── Experience
+   ├── Projects
+   ├── Certificates
+   ├── Portfolio
+   ├── Posts
+   ├── Media
+   ├── Completed Works
+   └── Reviews
+```
+
+Completed works and reviews should contribute to the user's professional reputation.
+
+---
+
+# 18. SOCIAL FEED
+
+The feed should be a professional social feed.
+
+Content types:
+
+```text
+Professional Posts
+Opportunities
+Project Showcases
+Achievements
+Work Updates
+Images
+Videos
+```
+
+The feed should support:
+
+```text
+Like
+Comment
+Share
+Save
+```
+
+Use pagination or infinite scrolling.
+
+---
+
+# 19. FEED GRAPH
+
+```text
+                         FEED
+                          │
+             ┌────────────┼────────────┐
+             ↓            ↓            ↓
+           POSTS     OPPORTUNITIES   PROJECTS
+             │            │            │
+             ↓            ↓            ↓
+        Engagement     Apply/View     View
+                          │
+                          ↓
+                    REQUEST SYSTEM
+                          │
+                          ↓
+                         WORK
+```
+
+---
+
+# 20. CREATE BUTTON
+
+The Create button provides:
+
+```text
+Create Post
+Create Work / Opportunity
+Create Project Showcase
+```
+
+Graph:
+
+```text
+CREATE
+  │
+  ├── POST
+  │
+  ├── WORK
+  │
+  └── PROJECT
+```
+
+---
+
+# 21. POSTS
+
+Users can create posts containing:
+
+```text
+Text
+Images
+Videos
+Project information
+Skills
+Links
+```
+
+Post actions:
+
+```text
+Like
+Comment
+Share
+Save
+```
+
+---
+
+# 22. OPPORTUNITIES
+
+An opportunity/work card contains:
+
+```text
+Poster
+Title
+Description
+Required Skills
+Budget / Demo Compensation
+Location
+Remote/Nearby
+Application Deadline
+Work Completion Deadline
+Posted Time
+```
+
+Actions:
+
+```text
+View Details
+Apply
+Save
+```
+
+---
+
+# 23. SEARCH PEOPLE
+
+The search page must be:
+
+```text
+Search People
+```
+
+NOT:
+
+```text
+Search Workers
+```
+
+because all users can give and take work.
+
+Filters:
+
+```text
+Technology / Non-Technology
+Location
+Rating
+Skills
+Availability
+Hourly / Full-Time
+Remote / Nearby
+```
+
+Search results show:
+
+```text
+Profile
+Skills
+Experience
+Rating
+Availability
+Portfolio
+```
+
+Actions:
+
+```text
+View Profile
+Request Work
+Hire
+Message
+```
+
+"Hire" and "Request Work" must ultimately use the same underlying work-request architecture.
+
+---
+
+# 24. CREATE WORK
+
+A requester can create a work.
+
+Example:
+
+```text
+Title:
+Build React Website
+
+Description:
+Need a responsive React website.
+
+Skills:
+React
+TypeScript
+CSS
+
+Budget:
+₹5,000 Demo Amount
+
+Completion Deadline:
+7 Days
+
+Location:
+Hyderabad
+
+Mode:
+Remote
+```
+
+The requester MUST be able to define the completion deadline.
+
+---
+
+# 25. TWO TYPES OF DEADLINES
+
+Clearly distinguish:
+
+## Application Deadline
+
+The time until users can apply for the opportunity.
+
+Example:
+
+```text
+Applications close in 5 days.
+```
+
+## Work Completion Deadline
+
+The amount of time the accepted assignee has to complete the work.
+
+Example:
+
+```text
+Complete within 7 days after acceptance.
+```
+
+These are separate concepts.
+
+---
+
+# 26. DEADLINE FLOW
+
+```text
+REQUESTER
+   ↓
+Create Work
+   ↓
+Enter Work Details
+   ↓
+Set Budget
+   ↓
+Set Completion Deadline
+   ↓
+Publish / Send Request
+   ↓
+User Accepts
+   ↓
+Record accepted_at
+   ↓
+Calculate due_at
+   ↓
+Start Countdown
+   ↓
+IN_PROGRESS
+```
+
+The backend must calculate the actual due date.
+
+---
+
+# 27. DEADLINE DATA
+
+The Work model should include:
+
+```text
+deadline_type
+deadline_duration_days
+application_deadline
+accepted_at
+due_at
+submitted_at
+completed_at
+extended_at
+extension_count
+is_overdue
+was_submitted_late
+delay_duration
+```
+
+Use server-side timestamps.
+
+Prefer UTC in the database.
+
+Convert to the user's local timezone for display.
+
+---
+
+# 28. LIVE COUNTDOWN
+
+Active work should show:
+
+```text
+⏱ 5 Days 8 Hours 24 Minutes Remaining
+```
+
+States:
+
+```text
+ON TRACK
+DUE SOON
+DUE TODAY
+OVERDUE
+```
+
+The frontend may update the displayed countdown every second.
+
+The backend remains the source of truth.
+
+---
+
+# 29. COMPLETE WORK STATE MACHINE
+
+```text
+DRAFT
+  ↓
+OPEN
+  ↓
+APPLICATIONS / REQUESTS
+  ↓
+ASSIGNED
+  ↓
+IN_PROGRESS
+  │
+  ├────────────→ SUBMITTED
+  │                   ↓
+  │                 REVIEW
+  │                   │
+  │          ┌────────┴────────┐
+  │          ↓                 ↓
+  │       ACCEPT            REVISION
+  │          ↓                 ↓
+  │    PAYMENT_PENDING    IN_PROGRESS
+  │          ↓                 │
+  │      COMPLETED ←───────────┘
+  │
+  └──── DEADLINE REACHED
+             ↓
+          OVERDUE
+             │
+      ┌──────┼──────┐
+      ↓      ↓      ↓
+    Submit Extend Cancel
+      ↓      ↓      ↓
+    Review  Active  Cancelled
+```
+
+---
+
+# 30. WHAT HAPPENS IF THE DEADLINE PASSES?
+
+If the assignee has not submitted by the deadline:
+
+```text
+IN_PROGRESS
+     ↓
+DEADLINE PASSED
+     ↓
+OVERDUE
+```
+
+Do NOT automatically delete the work.
+
+Do NOT automatically remove the assignee.
+
+Do NOT automatically transfer it to somebody else.
+
+Instead:
+
+```text
+Mark OVERDUE
+Notify requester
+Notify assignee
+Show overdue duration
+Allow assignee to submit
+Allow requester to extend
+Allow requester to cancel according to business rules
+```
+
+---
+
+# 31. OVERDUE WORKFLOW
+
+```text
+                    DEADLINE PASSED
+                           ↓
+                        OVERDUE
+                           │
+            ┌──────────────┼──────────────┐
+            ↓              ↓              ↓
+         Submit          Extend         Cancel
+            ↓              ↓              ↓
+          Review       IN_PROGRESS    CANCELLED
+            ↓
+      ┌─────┴─────┐
+      ↓           ↓
+   ACCEPT      REVISION
+      ↓           ↓
+   PAYMENT    IN_PROGRESS
+      ↓           ↓
+ COMPLETED   RESUBMIT
+```
+
+---
+
+# 32. EXTENDING DEADLINE
+
+The requester can extend the deadline.
+
+Example:
+
+```text
+Current Deadline:
+September 13, 10:00 AM
+
+Extend By:
+3 Days
+
+New Deadline:
+September 16, 10:00 AM
+```
+
+Require confirmation.
+
+Record every extension.
+
+Do not silently overwrite the original deadline.
+
+---
+
+# 33. DEADLINE HISTORY
+
+Create deadline extension history.
+
+Example:
+
+```text
+Original Deadline:
+7 Days
+
+Extension #1:
++3 Days
+
+Extension #2:
++2 Days
+
+Total:
+12 Days
+```
+
+Store:
+
+```text
+work_id
+old_due_at
+new_due_at
+extended_by
+reason
+created_at
+```
+
+---
+
+# 34. LATE SUBMISSION
+
+If submitted after the deadline:
+
+```text
+was_submitted_late = true
+```
+
+Store:
+
+```text
+submitted_at
+delay_duration
+```
+
+Example:
+
+```text
+Deadline:
+September 13, 10:00 AM
+
+Submitted:
+September 15, 2:00 PM
+
+Late By:
+2 Days 4 Hours
+```
+
+Display:
+
+```text
+Completed On Time
+```
+
+or:
+
+```text
+Completed Late
+```
+
+---
+
+# 35. DEADLINE NOTIFICATIONS
+
+Generate notifications:
+
+```text
+Work deadline approaching
+Work due tomorrow
+Work deadline reached
+Work is overdue
+Deadline extended
+Work submitted late
+Work completed
+```
+
+Example:
+
+```text
+"Your React Website project is due tomorrow."
+```
+
+```text
+"React Website is overdue by 1 day."
+```
+
+---
+
+# 36. DEADLINE REMINDER LOOP
+
+```text
+WORK ACTIVE
+    ↓
+Check Server Time
+    ↓
+Calculate Remaining Time
+    ↓
+    ┌─────────────────────┐
+    ↓                     ↓
+Remaining              Deadline
+    ↓                   Passed
+Continue                ↓
+Work                  OVERDUE
+    ↓                     ↓
+Reminder              Notify Users
+    ↓                     ↓
+Continue         Submit / Extend / Cancel
+```
+
+---
+
+# 37. REVISION LOOP
+
+This is a mandatory workflow.
+
+```text
+ASSIGNEE
+   ↓
+Submit Work
+   ↓
+REQUESTER REVIEWS
+   ↓
+   ├──── ACCEPT
+   │       ↓
+   │    PAYMENT
+   │       ↓
+   │   COMPLETED
+   │
+   └──── REJECT
+           ↓
+     REVISION REQUIRED
+           ↓
+       ASSIGNEE
+           ↓
+       Modify Work
+           ↓
+        Resubmit
+           ↓
+        Review
+           │
+           └──────── LOOP
+```
+
+The requester can request revisions until the work is accepted or otherwise terminated.
+
+---
+
+# 38. REQUEST SYSTEM
+
+Requests have:
+
+```text
+Incoming
+Outgoing
+```
+
+Incoming:
+
+```text
+User requested you for work.
+```
+
+Actions:
+
+```text
+Accept
+Reject
+```
+
+Outgoing:
+
+```text
+You requested another user.
+```
+
+Statuses:
+
+```text
+PENDING
+ACCEPTED
+REJECTED
+EXPIRED
+CANCELLED
+```
+
+Where an expiry is used, display a countdown.
+
+---
+
+# 39. APPLICATION SYSTEM
+
+For public opportunities:
+
+```text
+View Opportunity
+      ↓
+Apply
+      ↓
+Application Created
+      ↓
+Requester Reviews
+      ↓
+Accept / Reject
+```
+
+If accepted:
+
+```text
+Application
+   ↓
+Accepted
+   ↓
+Work Assigned
+   ↓
+IN_PROGRESS
+```
+
+Applications and direct requests should converge into the same assignment/work lifecycle.
+
+---
+
+# 40. ACTIVE WORKS
+
+Two sections:
+
+```text
+Doing
+Given
+```
+
+## Doing
+
+Work assigned to the current user.
+
+## Given
+
+Work created/assigned by the current user.
+
+Display:
+
+```text
+Title
+Other User
+Status
+Progress
+Deadline
+Countdown
+Budget
+Actions
+```
+
+---
+
+# 41. COMPLETED WORKS
+
+Two sections:
+
+```text
+Completed by Me
+Completed for Me
+```
+
+Display:
+
+```text
+Work
+Person
+Completion Date
+On-Time/Late Status
+Amount
+Rating
+Review
+```
+
+---
+
+# 42. CHAT
+
+One unified chat system:
+
+```text
+USER ↔ USER
+```
+
+Do not create separate employer/worker chats.
+
+Chat may be associated with a work:
+
+```text
+User A
+  ↕
+Chat
+  ↕
+User B
+  │
+  └── Related Work
+```
+
+Support:
+
+```text
+Text
+Timestamp
+Unread Count
+Work Context
+Notifications
+```
+
+---
+
+# 43. NOTIFICATIONS
+
+Create one notification center.
+
+Notifications include:
+
+```text
+New Work Request
+Application Received
+Application Accepted
+Request Accepted
+Request Rejected
+New Message
+Work Submitted
+Revision Requested
+Payment Received
+Payment Sent
+Work Completed
+New Rating
+Deadline Reminder
+Deadline Extended
+Work Overdue
+AI Recommendation
+```
+
+Notifications must be generated by backend events.
+
+---
+
+# 44. DEMO WALLET — NO REAL PAYMENTS
+
+This is a STRICT requirement.
+
+Do NOT implement:
+
+```text
+UPI
+Razorpay
+Stripe
+PayPal
+Bank APIs
+Credit Card Processing
+Real Payment Gateway
+Real Money
+```
+
+"Like UPI" may only refer to the visual idea of a transaction-history interface.
+
+Create:
+
+```text
+DEMO WALLET
+```
+
+---
+
+# 45. DEMO WALLET
+
+Each user has an internal simulated balance.
+
+Example:
+
+```text
+Demo Wallet Balance:
+₹10,000
+```
+
+Provide:
+
+```text
+Add Demo Money
+```
+
+This only changes the SQLite database.
+
+No real financial transaction occurs.
+
+Clearly label:
+
+```text
+DEMO / SIMULATED
+```
+
+---
+
+# 46. SIMULATED PAYMENT FLOW
+
+```text
+WORK COMPLETED
+      ↓
+REQUESTER APPROVES
+      ↓
+CHECK DEMO WALLET
+      │
+      ├── Insufficient
+      │       ↓
+      │   Payment Failed/Pending
+      │
+      └── Sufficient
+              ↓
+        Debit Requester
+              ↓
+        Credit Assignee
+              ↓
+       Create Transaction
+              ↓
+       Payment Successful
+              ↓
+          COMPLETED
+              ↓
+        Rating / Review
+```
+
+Use a database transaction.
+
+```text
+BEGIN
+ ↓
+Check Balance
+ ↓
+Debit
+ ↓
+Credit
+ ↓
+Create Transaction
+ ↓
+Update Work
+ ↓
+COMMIT
+```
+
+If anything fails:
+
+```text
+ROLLBACK
+```
+
+---
+
+# 47. TRANSACTIONS
+
+Show:
+
+```text
+Money Received
+Money Sent
+```
+
+Transaction fields:
+
+```text
+Transaction ID
+Work ID
+From User
+To User
+Amount
+Type
+Status
+Date
+```
+
+Types:
+
+```text
+SIMULATED_PAYMENT
+DEMO_WALLET_TOPUP
+```
+
+---
+
+# 48. RATING AND REVIEW
+
+After successful completion:
+
+```text
+Requester
+   ↓
+Rate Assignee
+   ↓
+1–5 Stars
+   ↓
+Write Review
+```
+
+The review appears on the user's profile.
+
+Calculate/update average rating.
+
+---
+
+# 49. AI ASSISTANT
+
+There is only ONE AI assistant.
+
+It must understand the user's context.
+
+Examples:
+
+```text
+"I need an electrician nearby."
+```
+
+The AI understands:
+
+```text
+Intent = Find Person
+Skill = Electrician
+Location = Nearby
+```
+
+Then:
+
+```text
+Search People
+   ↓
+Rank Results
+   ↓
+Show Profiles
+   ↓
+Request Work
+```
+
+Another example:
+
+```text
+"I want a React job."
+```
+
+AI understands:
+
+```text
+Intent = Find Opportunity
+Skill = React
+```
+
+Then:
+
+```text
+Search Open Opportunities
+   ↓
+Rank Results
+   ↓
+Show Opportunities
+   ↓
+Apply
+```
+
+---
+
+# 50. AI INTENT GRAPH
+
+```text
+USER QUERY
+    ↓
+INTENT ANALYSIS
+    ↓
+┌──────────────┬──────────────┬──────────────┐
+↓              ↓              ↓
+GIVE WORK    TAKE WORK      GENERAL
+↓              ↓              ↓
+Create/       Search        Answer/
+Manage        People/       Navigate
+Work          Jobs
+```
+
+The AI may:
+
+```text
+Search
+Recommend
+Navigate
+Explain
+Draft
+Suggest
+```
+
+It must NOT automatically:
+
+```text
+Accept Work
+Reject Work
+Send Payment
+Complete Payment
+Cancel Work
+Delete Data
+Change Password
+```
+
+Important actions require explicit user confirmation/action.
+
+---
+
+# 51. AI DEADLINE QUERIES
+
+The AI should understand deadline-related requests.
+
+Examples:
+
+```text
+"Show my projects due this week."
+
+"Which projects are overdue?"
+
+"What work is due tomorrow?"
+
+"How much time is left for my React project?"
+
+"Show projects I assigned that are late."
+```
+
+The AI should retrieve real database information.
+
+---
+
+# 52. DATABASE TABLES
+
+Create at minimum:
+
+```text
+Users
+Skills
+UserSkills
+
+Works
+WorkRequests
+Applications
+WorkAssignments
+DeadlineExtensions
+
+Posts
+PostMedia
+
+Projects
+ProjectMedia
+Experience
+Certificates
+PortfolioItems
+
+Connections
+
+Chats
+ChatParticipants
+Messages
+
+Wallets
+Transactions
+
+Reviews
+Notifications
+
+OTPRecords
+```
+
+Do NOT create:
+
+```text
+Employers
+Workers
+```
+
+---
+
+# 53. USER TABLE
+
+Example:
+
+```text
+id
+email
+password_hash
+name
+username
+bio
+profile_image
+cover_image
+location
+availability
+created_at
+updated_at
+```
+
+Email must be unique.
+
+Only Gmail addresses are accepted.
+
+---
+
+# 54. WORK TABLE
+
+Example:
+
+```text
+id
+requester_id
+assignee_id
+title
+description
+status
+budget
+deadline_type
+deadline_duration_days
+application_deadline
+accepted_at
+due_at
+submitted_at
+completed_at
+location
+work_mode
+created_at
+updated_at
+```
+
+Statuses:
+
+```text
+DRAFT
+OPEN
+ASSIGNED
+IN_PROGRESS
+SUBMITTED
+REVISION_REQUIRED
+OVERDUE
+PAYMENT_PENDING
+COMPLETED
+CANCELLED
+```
+
+---
+
+# 55. WORK REQUEST TABLE
+
+```text
+id
+work_id
+sender_id
+receiver_id
+status
+expires_at
+created_at
+updated_at
+```
+
+---
+
+# 56. APPLICATION TABLE
+
+```text
+id
+work_id
+applicant_id
+message
+status
+created_at
+updated_at
+```
+
+Statuses:
+
+```text
+PENDING
+ACCEPTED
+REJECTED
+WITHDRAWN
+```
+
+---
+
+# 57. DEADLINE EXTENSION TABLE
+
+```text
+id
+work_id
+old_due_at
+new_due_at
+extended_by
+reason
+created_at
+```
+
+Never delete deadline history.
+
+---
+
+# 58. POST TABLE
+
+```text
+id
+user_id
+content
+visibility
+created_at
+updated_at
+```
+
+Media:
+
+```text
+IMAGE
+VIDEO
+```
+
+---
+
+# 59. CHAT TABLES
+
+Use:
+
+```text
+Chats
+ChatParticipants
+Messages
+```
+
+Messages contain:
+
+```text
+id
+chat_id
+sender_id
+content
+created_at
+read_at
+```
+
+---
+
+# 60. WALLET TABLE
+
+Example:
+
+```text
+id
+user_id
+balance
+created_at
+updated_at
+```
+
+This is DEMO money only.
+
+---
+
+# 61. TRANSACTION TABLE
+
+Example:
+
+```text
+id
+transaction_id
+work_id
+from_user_id
+to_user_id
+amount
+type
+status
+created_at
+```
+
+---
+
+# 62. REVIEW TABLE
+
+Example:
+
+```text
+id
+work_id
+reviewer_id
+reviewee_id
+rating
+comment
+created_at
+```
+
+---
+
+# 63. DATABASE RELATIONSHIP GRAPH
+
+```text
+                         USERS
+                           │
+        ┌──────────────────┼──────────────────┐
+        ↓                  ↓                  ↓
+      POSTS             WORKS              PROFILE
+        │                  │                  │
+      Media          Applications             │
+                           │                  ├── Skills
+                           ↓                  ├── Experience
+                     Work Requests            ├── Projects
+                           │                  ├── Certificates
+                           ↓                  ├── Portfolio
+                       Assignment             └── Reviews
+                           │
+             ┌─────────────┼─────────────┐
+             ↓             ↓             ↓
+           CHAT        TRANSACTION     REVIEW
+             │             │             │
+             └─────────────┼─────────────┘
+                           ↓
+                     NOTIFICATIONS
+```
+
+---
+
+# 64. REST API
+
+Create APIs such as:
+
+```text
+/api/auth
+/api/users
+/api/profile
+/api/feed
+/api/posts
+/api/search
+/api/works
+/api/requests
+/api/applications
+/api/deadlines
+/api/chats
+/api/messages
+/api/wallet
+/api/transactions
+/api/reviews
+/api/notifications
+/api/ai
+```
+
+Authentication:
+
+```text
+POST /api/auth/register
+POST /api/auth/send-otp
+POST /api/auth/verify-otp
+POST /api/auth/login
+POST /api/auth/forgot-password
+POST /api/auth/reset-password
+POST /api/auth/logout
+GET  /api/auth/me
+```
+
+---
+
+# 65. FRONTEND ROUTES
+
+Use:
+
+```text
+/login
+/register
+/verify-otp
+/forgot-password
+/reset-password
+
+/dashboard
+/feed
+/profile/:username
+/search
+/create
+
+/requests
+/works/active
+/works/completed
+/works/:id
+
+/chats
+/chats/:id
+
+/transactions
+/notifications
+/ai-assistant
+/settings
+```
+
+Protect authenticated routes.
+
+---
+
+# 66. FRONTEND SERVICE ARCHITECTURE
+
+Use services such as:
+
+```text
+authService.ts
+userService.ts
+profileService.ts
+feedService.ts
+postService.ts
+workService.ts
+requestService.ts
+applicationService.ts
+deadlineService.ts
+chatService.ts
+transactionService.ts
+walletService.ts
+reviewService.ts
+notificationService.ts
+aiService.ts
+```
+
+Do not scatter raw API requests throughout components.
+
+---
+
+# 67. REACT HOOKS
+
+Where useful, create:
+
+```text
+useAuth()
+useUser()
+useFeed()
+useWorks()
+useRequests()
+useApplications()
+useChat()
+useNotifications()
+useWallet()
+useAI()
+```
+
+---
+
+# 68. REUSABLE UI COMPONENTS
+
+Create reusable:
+
+```text
+Button
+Input
+Textarea
+Select
+Modal
+Dialog
+Dropdown
+Avatar
+Badge
+Card
+Tabs
+Toast
+Tooltip
+Skeleton
+Spinner
+EmptyState
+ErrorState
+CountdownTimer
+ProgressBar
+WorkCard
+PostCard
+OpportunityCard
+ProfileCard
+NotificationItem
+TransactionItem
+```
+
+---
+
+# 69. COUNTDOWN COMPONENT
+
+Create a reusable:
+
+```text
+CountdownTimer
+```
+
+It should support:
+
+```text
+Days
+Hours
+Minutes
+Seconds
+```
+
+Example:
+
+```text
+2d 06h 42m 19s
+```
+
+When the deadline passes:
+
+```text
+OVERDUE
+```
+
+The component must not determine authoritative status by itself.
+
+The backend status remains authoritative.
+
+---
+
+# 70. FRONTEND STATES
+
+Every API-driven page must support:
+
+```text
+Loading
+Success
+Empty
+Error
+```
+
+Never show a blank page while waiting for data.
+
+---
+
+# 71. ERROR RESPONSE FORMAT
+
+Backend errors should follow a consistent structure:
+
+```json
+{
+  "success": false,
+  "message": "Human readable error",
+  "code": "ERROR_CODE"
+}
+```
+
+Do not expose stack traces.
+
+---
+
+# 72. TYPESCRIPT QUALITY
+
+Use strict TypeScript.
+
+Create interfaces/types for:
+
+```text
+User
+Post
+Work
+Application
+WorkRequest
+Deadline
+Chat
+Message
+Transaction
+Review
+Notification
+```
+
+Do not use `any` unnecessarily.
+
+---
+
+# 73. ESLINT
+
+Configure ESLint.
+
+These commands should work:
+
+```bash
+npm run lint
+npm run build
+```
+
+Fix lint and TypeScript errors instead of ignoring them.
+
+---
+
+# 74. PYTHON QUALITY
+
+Use:
+
+* Type hints
+* Pydantic schemas
+* Services
+* Exception handling
+* Logging
+* Environment configuration
+
+Avoid huge functions.
+
+Keep business logic modular.
+
+---
+
+# 75. SECURITY
+
+Implement:
+
+```text
+Password hashing
+Secure sessions/tokens
+Backend validation
+Frontend validation
+Authorization
+CORS
+OTP expiration
+OTP attempt limits
+Rate limiting where appropriate
+SQL injection protection
+Input validation
+Safe error messages
+Environment variables
+```
+
+Never expose:
+
+```text
+password_hash
+secrets
+API keys
+OTP secrets
+```
+
+to the frontend.
+
+---
+
+# 76. AUTHORIZATION RULES
+
+A user can modify:
+
+```text
+Their own profile
+Their own posts
+Their own projects
+Their own work
+```
+
+A requester can:
+
+```text
+Review applications
+Accept/reject applications
+Review submitted work
+Request revision
+Approve work
+Extend deadline
+```
+
+An assignee can:
+
+```text
+View assigned work
+Update progress
+Submit work
+Respond to revision requests
+```
+
+Users cannot modify another user's private resources without authorization.
+
+---
+
+# 77. WORK STATE TRANSITION VALIDATION
+
+The backend must enforce valid transitions.
+
+Valid examples:
+
+```text
+DRAFT → OPEN
+OPEN → ASSIGNED
+ASSIGNED → IN_PROGRESS
+IN_PROGRESS → SUBMITTED
+SUBMITTED → REVISION_REQUIRED
+SUBMITTED → PAYMENT_PENDING
+PAYMENT_PENDING → COMPLETED
+REVISION_REQUIRED → IN_PROGRESS
+IN_PROGRESS → OVERDUE
+OVERDUE → SUBMITTED
+OVERDUE → IN_PROGRESS
+```
+
+Do not allow arbitrary status changes from the frontend.
+
+For example:
+
+```text
+COMPLETED → IN_PROGRESS
+```
+
+must not be allowed by default.
+
+---
+
+# 78. DEADLINE SOURCE OF TRUTH
+
+The backend/server is authoritative.
+
+Do NOT rely on:
+
+```text
+Browser clock
+Frontend-only countdown
+Client-generated due date
+```
+
+The database must store timestamps.
+
+The backend determines:
+
+```text
+Is work overdue?
+How late is it?
+Was submission late?
+What is the current deadline?
+```
+
+---
+
+# 79. FEED ↔ WORK INTEGRATION
+
+The social feed and marketplace must feel like ONE application.
+
+```text
+FEED
+ ↓
+Opportunity
+ ↓
+View Details
+ ↓
+Apply
+ ↓
+Request/Application
+ ↓
+Assignment
+ ↓
+Active Work
+ ↓
+Completion
+ ↓
+Review
+ ↓
+Profile
+```
+
+---
+
+# 80. PROFILE ↔ WORK INTEGRATION
+
+```text
+PROFILE
+ ↓
+Skills
+ ↓
+Projects
+ ↓
+Completed Works
+ ↓
+Reviews
+ ↓
+Rating
+ ↓
+Professional Reputation
+```
+
+---
+
+# 81. SEARCH ↔ WORK INTEGRATION
+
+```text
+Search People
+      ↓
+View Profile
+      ↓
+Skills / Rating / Experience
+      ↓
+Request Work
+      ↓
+Create Request
+      ↓
+Accept
+      ↓
+Active Work
+```
+
+---
+
+# 82. NOTIFICATION EVENT GRAPH
+
+```text
+Application Created
+       ↓
+Requester Notification
+
+Application Accepted
+       ↓
+Applicant Notification
+
+New Message
+       ↓
+Receiver Notification
+
+Work Submitted
+       ↓
+Requester Notification
+
+Revision Requested
+       ↓
+Assignee Notification
+
+Deadline Approaching
+       ↓
+User Notification
+
+Deadline Passed
+       ↓
+Both Users Notification
+
+Deadline Extended
+       ↓
+Both Users Notification
+
+Payment Successful
+       ↓
+Both Users Notification
+
+Review Created
+       ↓
+Reviewed User Notification
+```
+
+---
+
+# 83. SOCIAL LOOP
+
+```text
+CREATE CONTENT
+      ↓
+FEED
+      ↓
+ENGAGEMENT
+      ↓
+PROFILE
+      ↓
+DISCOVERY
+      ↓
+WORK / CONNECTION
+      ↓
+MORE CONTENT
+      ↓
+FEED
+```
+
+---
+
+# 84. DISCOVERY LOOP
+
+```text
+Feed/Search
+     ↓
+Discover Person/Opportunity
+     ↓
+Request/Apply
+     ↓
+Work
+     ↓
+Complete
+     ↓
+Review
+     ↓
+Reputation
+     ↓
+Profile
+     ↓
+Feed/Search
+     ↓
+DISCOVER AGAIN
+```
+
+---
+
+# 85. COMPLETE USER JOURNEY
+
+```text
+REGISTER
+   ↓
+Gmail Validation
+   ↓
+OTP
+   ↓
+Password
+   ↓
+Confirm Password
+   ↓
+ACCOUNT CREATED
+   ↓
+PROFILE SETUP
+   ↓
+DASHBOARD
+   ↓
+FEED
+   ↓
+DISCOVER OPPORTUNITY
+   ↓
+VIEW WORK
+   ↓
+APPLY
+   ↓
+REQUESTER REVIEWS
+   ↓
+ACCEPT
+   ↓
+DEADLINE STARTS
+   ↓
+ACTIVE WORK
+   ↓
+CHAT
+   ↓
+ASSIGNEE WORKS
+   ↓
+SUBMIT
+   ↓
+REQUESTER REVIEWS
+   │
+   ├── REVISION
+   │      ↓
+   │   WORK AGAIN
+   │      ↓
+   │   RESUBMIT
+   │      ↓
+   │   REVIEW
+   │
+   └── ACCEPT
+          ↓
+     DEMO PAYMENT
+          ↓
+       COMPLETED
+          ↓
+       RATING
+          ↓
+       REVIEW
+          ↓
+       PROFILE
+          ↓
+        FEED
+```
+
+---
+
+# 86. SEED DATA
+
+Create fictional development/demo data.
+
+Include:
+
+```text
+Users
+Skills
+Profiles
+Posts
+Images
+Projects
+Opportunities
+Applications
+Requests
+Active Works
+Completed Works
+Reviews
+Demo Wallet Balances
+Transactions
+Notifications
+```
+
+Example fictional skills:
+
+```text
+React Developer
+Python Developer
+UI/UX Designer
+Graphic Designer
+Electrician
+Content Writer
+Cybersecurity Analyst
+Video Editor
+Digital Marketer
+Photographer
+```
+
+Do not use real people's private information.
+
+---
+
+# 87. MEDIA
+
+Support:
+
+```text
+Profile Picture
+Cover Image
+Post Images
+Post Videos
+Project Media
+Portfolio Media
+```
+
+Use a media service abstraction.
+
+For development, local file storage is acceptable.
+
+Do not hardcode a cloud storage provider.
+
+---
+
+# 88. RESPONSIVE DESIGN
+
+Desktop:
+
+```text
+Sidebar
++
+Main Content
++
+Optional Right Panel
+```
+
+Mobile:
+
+```text
+Top Bar
++
+Main Content
++
+Bottom Navigation
+```
+
+Do not simply shrink the desktop layout.
+
+Create a genuinely usable mobile layout.
+
+---
+
+# 89. ACCESSIBILITY
+
+Use:
+
+```text
+Semantic HTML
+Keyboard Navigation
+Proper Labels
+Focus States
+Accessible Dialogs
+Alt Text
+Good Contrast
+Screen Reader Support
+```
+
+---
+
+# 90. TESTING
+
+Write tests for:
+
+## Authentication
+
+```text
+Valid Gmail
+Invalid Gmail
+OTP
+Wrong OTP
+Expired OTP
+Resend OTP
+Password mismatch
+Registration
+Login
+Forgot Password
+```
+
+## Work
+
+```text
+Create Work
+Apply
+Accept
+Reject
+Assign
+Start Work
+Submit
+Revision
+Resubmit
+Complete
+```
+
+## Deadline
+
+```text
+Deadline creation
+Countdown
+Deadline expiration
+Overdue state
+Extension
+Extension history
+Late submission
+On-time submission
+```
+
+## Payment
+
+```text
+Demo top-up
+Sufficient balance
+Insufficient balance
+Successful simulated payment
+Transaction creation
+Wallet update
+Atomic transaction
+Rollback
+```
+
+## Authorization
+
+```text
+Unauthorized profile modification
+Unauthorized work modification
+Unauthorized transaction access
+```
+
+---
+
+# 91. NO MOCKUP RULE
+
+Do NOT stop at:
+
+```text
+Static UI
+Fake Buttons
+Hardcoded Cards
+Hardcoded Dashboard
+Fake Transactions
+Fake Notifications
+Non-functional Forms
+```
+
+Every important button should perform a real action.
+
+Forms must communicate with the backend.
+
+Data must persist in SQLite3.
+
+---
+
+# 92. NO REAL PAYMENT RULE
+
+The application must never perform real financial transactions.
+
+All payment values are:
+
+```text
+DEMO
+SIMULATED
+INTERNAL
+```
+
+Do not request credit-card information.
+
+Do not integrate a payment gateway.
+
+---
+
+# 93. IMPLEMENTATION ORDER
+
+Build in this order:
+
+```text
+PHASE 1
+Project Setup
+Frontend + Backend + SQLite3
+
+PHASE 2
+Authentication
+Gmail + OTP + Password
+
+PHASE 3
+User/Profile
+
+PHASE 4
+Unified Dashboard
+
+PHASE 5
+Feed + Posts + Media
+
+PHASE 6
+Search People
+
+PHASE 7
+Create Work/Opportunity
+
+PHASE 8
+Applications + Requests
+
+PHASE 9
+Deadline System
+
+PHASE 10
+Active/Completed Works
+
+PHASE 11
+Chat
+
+PHASE 12
+Notifications
+
+PHASE 13
+Demo Wallet + Simulated Transactions
+
+PHASE 14
+Reviews + Ratings
+
+PHASE 15
+AI Assistant
+
+PHASE 16
+Security
+
+PHASE 17
+Testing
+
+PHASE 18
+Responsive UI Polish
+
+PHASE 19
+Final Integration
+```
+
+---
+
+# 94. ENVIRONMENT VARIABLES
+
+Create:
+
+```text
+.env.example
+```
+
+Possible variables:
+
+```text
+DATABASE_URL
+JWT_SECRET
+OTP_EXPIRY_SECONDS
+EMAIL_HOST
+EMAIL_PORT
+EMAIL_USERNAME
+EMAIL_PASSWORD
+AI_API_KEY
+```
+
+Never commit real secrets.
+
+---
+
+# 95. README
+
+Create complete documentation explaining:
+
+```text
+Project Overview
+Architecture
+Frontend Setup
+Backend Setup
+SQLite Setup
+Environment Variables
+How to Run Frontend
+How to Run Backend
+How to Run Tests
+How to Run Lint
+How to Build
+Demo Accounts
+Demo Wallet
+Authentication Flow
+Work Lifecycle
+Deadline System
+AI Assistant
+```
+
+---
+
+# 96. FINAL VERIFICATION
+
+Before finishing, verify:
+
+## Frontend
+
+```text
+[ ] React
+[ ] TypeScript
+[ ] TSX
+[ ] Vite
+[ ] Tailwind
+[ ] ESLint
+[ ] Responsive
+[ ] Accessible
+[ ] Reusable components
+[ ] No unnecessary any
+```
+
+## Backend
+
+```text
+[ ] Python
+[ ] FastAPI
+[ ] Pydantic
+[ ] SQLAlchemy
+[ ] REST APIs
+[ ] Validation
+[ ] Authorization
+[ ] Error handling
+```
+
+## Database
+
+```text
+[ ] SQLite3
+[ ] Persistent
+[ ] Foreign keys
+[ ] Relationships
+[ ] Constraints
+[ ] No Employer table
+[ ] No Worker table
+```
+
+## Authentication
+
+```text
+[ ] Gmail-only
+[ ] @gmail.com validation
+[ ] OTP
+[ ] OTP expiration
+[ ] OTP resend
+[ ] Password
+[ ] Confirm Password
+[ ] Secure hashing
+[ ] Login
+[ ] Forgot Password
+[ ] NO Google Auth
+[ ] NO OAuth
+[ ] NO social login
+```
+
+## Social
+
+```text
+[ ] Profile
+[ ] Cover Image
+[ ] Posts
+[ ] Images
+[ ] Videos
+[ ] Projects
+[ ] Experience
+[ ] Certificates
+[ ] Portfolio
+[ ] Reviews
+[ ] Feed
+```
+
+## Marketplace
+
+```text
+[ ] Create Work
+[ ] Search People
+[ ] Applications
+[ ] Requests
+[ ] Assignment
+[ ] Active Works
+[ ] Work Submission
+[ ] Revision Loop
+[ ] Completion
+```
+
+## Deadline
+
+```text
+[ ] Application Deadline
+[ ] Completion Deadline
+[ ] Countdown
+[ ] On-time submission
+[ ] Late submission
+[ ] Overdue state
+[ ] Extension
+[ ] Extension history
+[ ] Deadline notifications
+[ ] Server-side deadline validation
+```
+
+## Communication
+
+```text
+[ ] Chat
+[ ] Notifications
+```
+
+## Payments
+
+```text
+[ ] Demo Wallet
+[ ] Demo Balance
+[ ] Demo Top-up
+[ ] Simulated Payment
+[ ] Transactions
+[ ] Insufficient Balance
+[ ] Atomic Updates
+[ ] NO Real Payment
+```
+
+## AI
+
+```text
+[ ] One AI Assistant
+[ ] Intent Detection
+[ ] Search People
+[ ] Search Opportunities
+[ ] Deadline Queries
+[ ] Context Awareness
+[ ] Safe Confirmation
+```
+
+---
+
+# 97. FINAL CLAUDE CODE INSTRUCTION
+
+DO NOT merely explain this specification.
+
+BUILD THE APPLICATION.
+
+First inspect the repository if one exists.
+
+Then:
+
+```text
+1. Plan the architecture.
+2. Create/modify the required files.
+3. Implement the frontend.
+4. Implement the Python backend.
+5. Implement SQLite3.
+6. Implement authentication.
+7. Implement profiles.
+8. Implement feed.
+9. Implement search.
+10. Implement work marketplace.
+11. Implement applications and requests.
+12. Implement deadline and overdue workflows.
+13. Implement chat.
+14. Implement notifications.
+15. Implement demo wallet.
+16. Implement simulated payments.
+17. Implement reviews.
+18. Implement AI assistant.
+19. Implement security.
+20. Add seed data.
+21. Add tests.
+22. Run lint.
+23. Run TypeScript build.
+24. Run backend tests.
+25. Fix errors.
+26. Verify frontend ↔ backend ↔ database integration.
+```
+
+Do not leave important features as TODOs.
+
+Do not replace functional features with mock data.
+
+Do not introduce permanent Employer/Worker roles.
+
+Do not introduce Google Authentication.
+
+Do not introduce real payments.
+
+Do not use a database other than SQLite3.
+
+Use:
+
+```text
+FRONTEND  → React + TypeScript + TSX + Vite + Tailwind + ESLint
+BACKEND   → Python + FastAPI + SQLAlchemy
+DATABASE  → SQLite3
+AUTH      → Gmail + OTP + Password
+PAYMENTS  → Internal Demo Wallet / Simulated Transactions
+```
+
+The final application should feel like a single unified platform where a person can:
+
+```text
+Create a professional identity
+        ↓
+Post content
+        ↓
+Discover people
+        ↓
+Discover opportunities
+        ↓
+Give work
+        ↓
+Take work
+        ↓
+Communicate
+        ↓
+Complete work within a deadline
+        ↓
+Handle revisions
+        ↓
+Use simulated payment
+        ↓
+Receive ratings/reviews
+        ↓
+Build reputation
+        ↓
+Return to the social feed
+        ↓
+Discover again
+```
+
+The central principle is:
+
+> **One person. One account. One profile. One dashboard. Multiple contextual roles. One connected ecosystem.**
+
+END OF MASTER PROJECT SPECIFICATION.
