@@ -865,5 +865,3 @@ If you find **Workfolio** useful or interesting, consider giving the repository 
 **Workfolio — One Account. One Profile. Multiple Ways to Work. 🚀**
 
 </div>
-
-I kept the structure, badge-heavy presentation, architecture diagrams, workflows, security sections, setup instructions, limitations/future enhancements, skills, and project-status style aligned with the **ShadowChat README reference** you provided. 
