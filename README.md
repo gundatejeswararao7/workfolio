@@ -1,5 +1,3 @@
-Absolutely. I’ll keep the **same professional GitHub README style and structure as the ShadowChat reference**, but adapt it to your **Workfolio** project and the stack/features you provided.
-
 # 💼 Workfolio — Professional Social Network & Work Marketplace
 
 > **A unified professional social network and work marketplace built around one account, one profile, and multiple work contexts — connecting people, opportunities, communication, project execution, and professional reputation in one platform.**
